@@ -2,13 +2,13 @@
 import { supabase } from './supabaseClient'
 
 export async function sendMagicLink(
-    email: string,
-    redirectTo: string = window.location.origin,
+  email: string,
+  redirectTo: string = window.location.origin,
 ) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: window.location.origin,
+      emailRedirectTo: redirectTo,
       shouldCreateUser: true, // false = don't auto-register new users
     },
   })

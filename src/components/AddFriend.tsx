@@ -18,7 +18,7 @@ export default function AddFriend() {
 
   useEffect(() => {
     if (!userId || !id) return
-    ;(async () => {
+    (async () => {
       const p = await getProfile(id)
       if (!p) return setNotFound(true)
       setProfile(p)

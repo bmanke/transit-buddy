@@ -1,5 +1,5 @@
 // src/components/Login.tsx
-import {JSX, type SubmitEvent, useState} from 'react'
+import { type SubmitEvent, useState} from 'react'
 import { sendMagicLink } from '../lib/auth'
 
 type Props = { redirectTo?: string }
