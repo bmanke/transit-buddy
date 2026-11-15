@@ -1,10 +1,11 @@
-import { Route, Routes } from 'react-router'
+import { Link, Route, Routes } from 'react-router'
 import { supabase } from './lib/supabaseClient'
 import { useSession } from './lib/useSession'
 import Login from './components/Login'
 import Friends from './components/Friends'
 import MyQrCode from './components/MyQrCode'
 import AddFriend from './components/AddFriend'
+import Form from './components/Form'
 import ThemeToggle from './components/ThemeToggle'
 
 function Home() {
@@ -34,6 +35,7 @@ function Home() {
       <div className="navbar bg-base-100 shadow-sm px-4">
         <div className="flex-1 text-lg font-bold">Friends</div>
         <div className="flex items-center gap-2">
+          <Link to="/form" className="btn btn-sm btn-ghost">Transit Buddy</Link>
           <span className="hidden sm:inline text-sm opacity-70">{session.user.email}</span>
           <ThemeToggle />
           <button className="btn btn-sm btn-outline" onClick={() => supabase.auth.signOut()}>
@@ -50,11 +52,23 @@ function Home() {
   )
 }
 
+function FormPage() {
+  return (
+    <main className="min-h-screen bg-base-200 grid place-items-center p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      <Form />
+    </main>
+  )
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/add/:id" element={<AddFriend />} />
+      <Route path="/form" element={<FormPage />} />
     </Routes>
   )
 }

@@ -1,79 +1,101 @@
-import { type SubmitEvent, useState } from "react";
-import { sendFormData } from "../lib/formData";
+import { type SubmitEvent, useState } from 'react'
+import { Link } from 'react-router'
+import { sendFormData } from '../lib/formData'
+
+const STATIONS = [
+  { value: 'A1', label: 'Metro Line - Station A1' },
+  { value: 'A2', label: 'Metro Line - Station A2' },
+]
 
 export default function Form() {
-    const [meetspot, setMeetspot] = useState('');
-    const [meettime, setMeettime] = useState('');
-    const [destination, setDestination] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState<string | null>();
+  const [meetspot, setMeetspot] = useState('')
+  const [meettime, setMeettime] = useState('')
+  const [destination, setDestination] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
-    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setLoading(true);
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage(null)
 
-        if (meetspot === destination) {
-            setMessage('Meet up spot and destination can not be the same!')
-            setLoading(false);
-            return;
-        }
-        else 
-        {
-            const {ok, error} = await sendFormData( meetspot, meettime, destination)
-            setMessage(ok ? 'SUCCESS!' : error)
-        }
-        setLoading(false)
+    if (meetspot === destination) {
+      setSuccess(false)
+      setMessage('Meet up spot and destination can not be the same!')
+      setLoading(false)
+      return
     }
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <h2>Transit Buddy setup</h2>
-                <label htmlFor='meetspot'>Meet-up Spot:</label>
-                <p>
-                    <select 
-                        id='meetspot' 
-                        value={meetspot} 
-                        onChange={(e) => setMeetspot(e.target.value)} 
-                        required>
-                        <option value='' disabled>Choose Meetup location</option>
-                        <option value='A1'>Metro Line - Station A1</option>
-                        <option value='A2'>Metro Line - Station A2</option>
-                    </select>
-                </p>
-            </div>
-            <div>
-                <label htmlFor='meettime'>Meet-up Time:</label>
-                <p>
-                    <input 
-                        id='meettime' 
-                        type='time'
-                        value={meettime} 
-                        onChange={(e) => setMeettime(e.target.value)} 
-                        required
-                    />
-                </p>
-            </div>
-            <div>
-                <label htmlFor='destination'>Destination:</label>
-                <p>
-                    <select 
-                        id='destination' 
-                        value={destination} 
-                        onChange={(e) => setDestination(e.target.value)}
-                        required>
-                        <option value='' disabled>Choose a destination</option>
-                        <option value='A1'>Metro Line - Station A1</option>
-                        <option value='A2'>Metro Line - Station A2</option>
-                    </select>
-                </p>
-            </div>
+    const { ok, error } = await sendFormData(meetspot, meettime, destination)
 
-            <button type="submit" disabled={loading}>
-                Confirm details
-            </button>
-            <p>{message}</p>
-        </form>
-    )
+    setSuccess(ok)
+    setMessage(ok ? 'SUCCESS!' : error)
+    setLoading(false)
+  }
 
+  return (
+    <form onSubmit={handleSubmit} className="card bg-base-100 shadow-xl w-full max-w-md">
+      <div className="card-body gap-4">
+        <h2 className="card-title text-2xl">Transit Buddy setup</h2>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Meet-up Spot</legend>
+          <select
+            id="meetspot"
+            className="select w-full"
+            value={meetspot}
+            onChange={(e) => setMeetspot(e.target.value)}
+            required
+          >
+            <option value="" disabled>Choose Meetup location</option>
+            {STATIONS.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Meet-up Time</legend>
+          <input
+            id="meettime"
+            type="time"
+            className="input w-full"
+            value={meettime}
+            onChange={(e) => setMeettime(e.target.value)}
+            required
+          />
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Destination</legend>
+          <select
+            id="destination"
+            className="select w-full"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            required
+          >
+            <option value="" disabled>Choose a destination</option>
+            {STATIONS.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </fieldset>
+
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading && <span className="loading loading-spinner loading-sm" />}
+          {loading ? 'Saving…' : 'Confirm details'}
+        </button>
+
+        {message && (
+          <div role="status" className={`alert alert-soft ${success ? 'alert-success' : 'alert-error'}`}>
+            <span>{message}</span>
+          </div>
+        )}
+
+        <Link to="/" className="link link-hover text-sm text-center">Back to my friends</Link>
+      </div>
+    </form>
+  )
 }
