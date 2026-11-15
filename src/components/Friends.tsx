@@ -25,7 +25,9 @@ export default function Friends({ userId }: Props) {
   }, [])
 
   useEffect(() => {
-    load()
+    getFriendships()
+      .then(setRows)
+      .catch((e) => setMessage(e instanceof Error ? e.message : 'Failed to load friends'))
   }, [load])
 
   const other = (f: Friendship) => (f.requester.id === userId ? f.addressee : f.requester)
