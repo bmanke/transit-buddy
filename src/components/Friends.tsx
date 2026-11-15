@@ -6,7 +6,7 @@ import {
   type Friendship, type Profile,
 } from '../lib/friends'
 
-type Props = { userId: bigint }
+type Props = { userId: number }
 
 const displayName = (p: Profile) => p.display_name ?? p.username ?? 'Unknown'
 
@@ -39,7 +39,7 @@ export default function Friends({ userId }: Props) {
     setResults(term.trim() ? await searchProfiles(term.trim()) : [])
   }
 
-  const handleAdd = async (id: bigint) => {
+  const handleAdd = async (id: number) => {
     const { ok, error } = await sendFriendRequest(id)
     setMessage(ok ? 'Request sent.' : error)
     if (ok) load()

@@ -3,14 +3,14 @@
 import { supabase } from './supabaseClient';
 
 export type Profile = {
-    id: bigint
+    id: string
     username: string
     display_name: string | null
     avatar_url: string | null
 }
 
 export type Friendship = {
-    id: bigint
+    id: number
     status: 'pending' | 'accepted'
     requester: Profile
     addressee: Profile
@@ -32,7 +32,7 @@ export async function getFriendships(): Promise<Friendship[]> {
     return ( data ?? []) as unknown as Friendship[]
 }
 
-export async function sendFriendRequest(addresseeId: bigint) {
+export async function sendFriendRequest(addresseeId: number) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { ok: false, error: 'Not signed in' }
 
@@ -45,7 +45,7 @@ export async function sendFriendRequest(addresseeId: bigint) {
     return { ok: !error, error: error?.message ?? null }
 }
 
-export async function acceptRequest(friendshipId: bigint) {
+export async function acceptRequest(friendshipId: number) {
     const { error } = await supabase
         .from('friendships')
         .update({ status: 'accepted' })
@@ -54,7 +54,7 @@ export async function acceptRequest(friendshipId: bigint) {
     return { ok: !error, error: error?.message ?? null }
 }
 
-export async function removeFriendship(friendshipId: bigint) {
+export async function removeFriendship(friendshipId: number) {
     const {error} = await supabase.from('friendships').delete().eq('id', friendshipId)
     return {ok: !error, error: error?.message ?? null}
 }
@@ -71,7 +71,7 @@ export async function searchProfiles(term: string): Promise<Profile[]> {
   return data ?? []
 }
 
-export async function getProfile(id: bigint): Promise<Profile | null> {
+export async function getProfile(id: string): Promise<Profile | null> {
     const { data, error } = await supabase
         .from('profiles')
         .select(PROFILE_COLS)
