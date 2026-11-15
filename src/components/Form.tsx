@@ -6,7 +6,7 @@ export default function Form() {
     const [meettime, setMeettime] = useState('');
     const [destination, setDestination] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState<string | null>();
 
     const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -19,7 +19,7 @@ export default function Form() {
         }
         else 
         {
-            const {ok, error} = await sendFormData(meetspot, meettime, destination)
+            const {ok, error} = await sendFormData( meetspot, meettime, destination)
             setMessage(ok ? 'SUCCESS!' : error)
         }
         setLoading(false)
@@ -28,6 +28,7 @@ export default function Form() {
     return (
         <form onSubmit={handleSubmit}>
             <div>
+                <h2>Transit Buddy setup</h2>
                 <label htmlFor='meetspot'>Meet-up Spot:</label>
                 <p>
                     <select 
@@ -55,15 +56,17 @@ export default function Form() {
             </div>
             <div>
                 <label htmlFor='destination'>Destination:</label>
-                <select 
-                    id='destination' 
-                    value={destination} 
-                    onChange={(e) => setDestination(e.target.value)}
-                    required>
-                    <option value='' disabled>Choose a destination</option>
-                    <option value='A1'>Metro Line - Station B1</option>
-                    <option value='B2'>Metro Line - Station B2</option>
-                </select>
+                <p>
+                    <select 
+                        id='destination' 
+                        value={destination} 
+                        onChange={(e) => setDestination(e.target.value)}
+                        required>
+                        <option value='' disabled>Choose a destination</option>
+                        <option value='A1'>Metro Line - Station A1</option>
+                        <option value='A2'>Metro Line - Station A2</option>
+                    </select>
+                </p>
             </div>
 
             <button type="submit" disabled={loading}>
