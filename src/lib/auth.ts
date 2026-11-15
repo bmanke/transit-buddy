@@ -1,7 +1,10 @@
 // src/lib/auth.ts
 import { supabase } from './supabaseClient'
 
-export async function sendMagicLink(email: string) {
+export async function sendMagicLink(
+    email: string,
+    redirectTo: string = window.location.origin,
+) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {

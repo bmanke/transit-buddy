@@ -1,3 +1,5 @@
+// src/components/Friend.tsx
+
 import { useCallback, useEffect, useState, type SubmitEvent } from 'react'
 import {
   acceptRequest, getFriendships, removeFriendship, searchProfiles, sendFriendRequest,

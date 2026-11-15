@@ -1,8 +1,10 @@
 // src/components/Login.tsx
-import { type SubmitEvent, useState } from 'react'
+import {JSX, type SubmitEvent, useState} from 'react'
 import { sendMagicLink } from '../lib/auth'
 
-export default function Login() {
+type Props = { redirectTo?: string }
+
+export default function Login({ redirectTo }: Props) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
@@ -12,7 +14,7 @@ export default function Login() {
     setLoading(true)
     setMessage(null)
 
-    const { ok, error } = await sendMagicLink(email)
+    const { ok, error } = await sendMagicLink(email, redirectTo)
 
     setMessage(ok ? 'Check your email for the sign-in link.' : error)
     setLoading(false)

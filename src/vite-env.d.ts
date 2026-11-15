@@ -6,4 +6,5 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
+  readonly VITE_APP_URL?: string
 }

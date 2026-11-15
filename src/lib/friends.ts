@@ -70,3 +70,14 @@ export async function searchProfiles(term: string): Promise<Profile[]> {
 
   return data ?? []
 }
+
+export async function getProfile(id: string): Promise<Profile | null> {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select(PROFILE_COLS)
+        .eq('id', id)
+        .maybeSingle()
+
+    if (error) throw error
+    return data
+}
