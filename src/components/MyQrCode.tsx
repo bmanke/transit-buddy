@@ -1,5 +1,3 @@
-// src/components/MyQrCode.tsx
-
 import { QRCodeSVG } from 'qrcode.react'
 
 export default function MyQrCode({ userId }: { userId: string }) {
@@ -7,9 +5,14 @@ export default function MyQrCode({ userId }: { userId: string }) {
   const url = `${base}/add/${userId}`
 
   return (
-    <div>
-      <QRCodeSVG value={url} size={220} level="M" marginSize={4} bgColor="#ffffff" fgColor="#000000" />
-      <p>Scan to add me as a friend</p>
+    <div className="card bg-base-100 shadow-md">
+      <div className="card-body items-center text-center">
+        <h2 className="card-title">My QR code</h2>
+        <div className="rounded-box bg-white p-3">
+          <QRCodeSVG value={url} size={200} level="M" marginSize={2} bgColor="#ffffff" fgColor="#000000" />
+        </div>
+        <p className="text-sm opacity-70">Scan to add me as a friend</p>
+      </div>
     </div>
   )
 }

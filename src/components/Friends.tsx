@@ -1,10 +1,9 @@
-// src/components/Friend.tsx
-
 import { useCallback, useEffect, useState, type SubmitEvent } from 'react'
 import {
   acceptRequest, getFriendships, removeFriendship, searchProfiles, sendFriendRequest,
   type Friendship, type Profile,
 } from '../lib/friends'
+import Avatar from './Avatar'
 
 type Props = { userId: string }
 
@@ -25,9 +24,7 @@ export default function Friends({ userId }: Props) {
   }, [])
 
   useEffect(() => {
-    getFriendships()
-      .then(setRows)
-      .catch((e) => setMessage(e instanceof Error ? e.message : 'Failed to load friends'))
+    load()
   }, [load])
 
   const other = (f: Friendship) => (f.requester.id === userId ? f.addressee : f.requester)
@@ -54,51 +51,93 @@ export default function Friends({ userId }: Props) {
   }
 
   return (
-    <section>
-      <h2>Friends ({friends.length})</h2>
-      {message && <p role="status">{message}</p>}
+    <section className="grid gap-4">
+      {message && (
+        <div role="status" className="alert alert-info alert-soft">
+          <span>{message}</span>
+          <button className="btn btn-xs btn-ghost" onClick={() => setMessage(null)}>✕</button>
+        </div>
+      )}
 
-      <ul>
-        {friends.map((f) => (
-          <li key={f.id}>
-            {displayName(other(f))}{' '}
-            <button onClick={() => run(() => removeFriendship(f.id))}>Remove</button>
-          </li>
-        ))}
-        {friends.length === 0 && <li>No friends yet.</li>}
-      </ul>
+      <div className="card bg-base-100 shadow-md">
+        <div className="card-body">
+          <h2 className="card-title">
+            Friends <span className="badge badge-primary">{friends.length}</span>
+          </h2>
+          <ul className="list">
+            {friends.map((f) => (
+              <li key={f.id} className="list-row items-center">
+                <Avatar name={displayName(other(f))} />
+                <div className="list-col-grow font-medium">{displayName(other(f))}</div>
+                <button className="btn btn-sm btn-ghost text-error" onClick={() => run(() => removeFriendship(f.id))}>
+                  Remove
+                </button>
+              </li>
+            ))}
+            {friends.length === 0 && <li className="list-row opacity-60">No friends yet.</li>}
+          </ul>
+        </div>
+      </div>
 
-      <h3>Requests</h3>
-      <ul>
-        {incoming.map((f) => (
-          <li key={f.id}>
-            {displayName(f.requester)}{' '}
-            <button onClick={() => run(() => acceptRequest(f.id))}>Accept</button>{' '}
-            <button onClick={() => run(() => removeFriendship(f.id))}>Decline</button>
-          </li>
-        ))}
-        {outgoing.map((f) => (
-          <li key={f.id}>
-            {displayName(f.addressee)} (pending){' '}
-            <button onClick={() => run(() => removeFriendship(f.id))}>Cancel</button>
-          </li>
-        ))}
-      </ul>
+      {(incoming.length > 0 || outgoing.length > 0) && (
+        <div className="card bg-base-100 shadow-md">
+          <div className="card-body">
+            <h2 className="card-title">Requests</h2>
+            <ul className="list">
+              {incoming.map((f) => (
+                <li key={f.id} className="list-row items-center">
+                  <Avatar name={displayName(f.requester)} />
+                  <div className="list-col-grow font-medium">{displayName(f.requester)}</div>
+                  <button className="btn btn-sm btn-success" onClick={() => run(() => acceptRequest(f.id))}>
+                    Accept
+                  </button>
+                  <button className="btn btn-sm btn-ghost" onClick={() => run(() => removeFriendship(f.id))}>
+                    Decline
+                  </button>
+                </li>
+              ))}
+              {outgoing.map((f) => (
+                <li key={f.id} className="list-row items-center">
+                  <Avatar name={displayName(f.addressee)} />
+                  <div className="list-col-grow">
+                    <span className="font-medium">{displayName(f.addressee)}</span>{' '}
+                    <span className="badge badge-warning badge-sm">pending</span>
+                  </div>
+                  <button className="btn btn-sm btn-ghost" onClick={() => run(() => removeFriendship(f.id))}>
+                    Cancel
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
 
-      <h3>Add a friend</h3>
-      <form onSubmit={handleSearch}>
-        <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search username" />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {results
-          .filter((p) => p.id !== userId)
-          .map((p) => (
-            <li key={p.id}>
-              {displayName(p)} <button onClick={() => handleAdd(p.id)}>Add</button>
-            </li>
-          ))}
-      </ul>
+      <div className="card bg-base-100 shadow-md">
+        <div className="card-body">
+          <h2 className="card-title">Add a friend</h2>
+          <form onSubmit={handleSearch} className="join w-full">
+            <input
+              className="input join-item w-full"
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+              placeholder="Search username"
+            />
+            <button type="submit" className="btn btn-primary join-item">Search</button>
+          </form>
+          <ul className="list">
+            {results
+              .filter((p) => p.id !== userId)
+              .map((p) => (
+                <li key={p.id} className="list-row items-center">
+                  <Avatar name={displayName(p)} />
+                  <div className="list-col-grow font-medium">{displayName(p)}</div>
+                  <button className="btn btn-sm btn-primary" onClick={() => handleAdd(p.id)}>Add</button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
     </section>
   )
 }
