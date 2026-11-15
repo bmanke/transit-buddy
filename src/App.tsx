@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './lib/supabaseClient'
 import Login from './components/Login'
+import Friends from './components/Friends'
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -34,6 +35,7 @@ export default function App() {
     <div>
       <p>Signed in as {session.user.email}</p>
       <button onClick={() => supabase.auth.signOut()}>Sign out</button>
+      <Friends userId={session.user.id} />
     </div>
   )
 }
