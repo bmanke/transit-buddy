@@ -1,5 +1,7 @@
+// src/components/Login.tsx
 import { type SubmitEvent, useState } from 'react'
 import { sendMagicLink } from '../lib/auth'
+import TransitLogo from './TransitLogo'
 
 type Props = { redirectTo?: string }
 
@@ -22,35 +24,44 @@ export default function Login({ redirectTo }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card bg-base-100 shadow-xl w-full max-w-sm">
-      <div className="card-body gap-4">
-        <h2 className="card-title">Sign in</h2>
-        <p className="text-sm opacity-70">Enter your email and we'll send you a magic link.</p>
+    <div className="flex flex-col items-center gap-6 w-full max-w-sm">
+      <TransitLogo />
 
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Email</legend>
-          <input
-            id="email"
-            type="email"
-            className="input w-full"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </fieldset>
+      <form onSubmit={handleSubmit} className="card bg-base-100 shadow-xl w-full">
+        <div className="card-body gap-4">
+          <h2 className="card-title">Sign in</h2>
+          <p className="text-sm opacity-70">
+            Enter your email and we'll send you a magic link.
+          </p>
 
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading && <span className="loading loading-spinner loading-sm" />}
-          {loading ? 'Sending…' : 'Send magic link'}
-        </button>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Email</legend>
+            <input
+              id="email"
+              type="email"
+              className="input w-full"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </fieldset>
 
-        {message && (
-          <div role="status" className={`alert ${sent ? 'alert-success' : 'alert-error'} alert-soft`}>
-            <span>{message}</span>
-          </div>
-        )}
-      </div>
-    </form>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading && <span className="loading loading-spinner loading-sm" />}
+            {loading ? 'Sending…' : 'Send magic link'}
+          </button>
+
+          {message && (
+            <div
+              role="status"
+              className={`alert alert-soft ${sent ? 'alert-success' : 'alert-error'}`}
+            >
+              <span>{message}</span>
+            </div>
+          )}
+        </div>
+      </form>
+    </div>
   )
 }
