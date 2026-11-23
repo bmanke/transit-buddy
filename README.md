@@ -72,7 +72,7 @@ Option 2 (Recieve a meetup):
 | Names | Feature |
 | :--- | :--- |
 | Pixel-bug-eater | Meetups |
-| bmanke | QR Code & Friends list |
+| bmanke | Authentication (Magic Links) & QR Code & Friends list |
 | shape-warrior-t | Database setup |
 
 ### Why this project exists:
